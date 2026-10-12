@@ -5,29 +5,74 @@ import { MetricCards } from '../components/dashboard/MetricCards';
 import { MeetingsTable } from '../components/dashboard/MeetingsTable';
 import { DispatchWidgets } from '../components/dashboard/DispatchWidgets';
 import { CaptureIngestView } from '../components/dashboard/CaptureIngestView';
+import { TranscriptReviewView } from '../components/dashboard/TranscriptReviewView';
+import { IntegrationsSettingsView } from '../components/dashboard/IntegrationsSettingsView';
 
 interface DashboardPageProps {
   onSignOut?: () => void;
   onNewMeeting?: () => void;
 }
 
+const meetingMetadata: Record<string, { title: string; date: string }> = {
+  '1': { title: 'Sprint 42 Backlog Grooming', date: 'Oct 24, 2024 · 10:00 AM' },
+  '2': { title: 'Q4 Product Roadmap Sync', date: 'Oct 24, 2024 · 02:00 PM' },
+  '3': { title: 'Client Onboarding - FinTech Core', date: 'Oct 24, 2024 · 03:30 PM' },
+  '4': { title: 'Architecture: Vector DB Migration', date: 'Oct 23, 2024 · 11:00 AM' },
+  '5': { title: 'Weekly B2B Sales & GTM Pipeline', date: 'Oct 23, 2024 · 04:00 PM' },
+};
+
 export const DashboardPage: React.FC<DashboardPageProps> = ({
   onSignOut,
   onNewMeeting,
 }) => {
-  const [currentTab, setCurrentTab] = useState('dashboard');
+  const getInitialTab = () => {
+    const hash = window.location.hash.replace('#', '').toLowerCase();
+    if (['dashboard', 'capture-and-ingest', 'transcript-review', 'integrations-and-settings'].includes(hash)) {
+      return hash;
+    }
+    return 'dashboard';
+  };
+
+  const [currentTab, setCurrentTab] = useState(getInitialTab);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedMeeting, setSelectedMeeting] = useState<{
+    id: string;
+    title: string;
+    date: string;
+  } | null>(null);
+
+  React.useEffect(() => {
+    const handleHash = () => {
+      const hash = window.location.hash.replace('#', '').toLowerCase();
+      if (['dashboard', 'capture-and-ingest', 'transcript-review', 'integrations-and-settings'].includes(hash)) {
+        setCurrentTab(hash);
+      }
+    };
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
+  }, []);
+
+  const handleTabChange = (tab: string) => {
+    setCurrentTab(tab);
+    window.location.hash = tab;
+  };
 
   const handleReviewMeeting = (meetingId: string) => {
-    console.log('Navigating to review meeting:', meetingId);
+    const meta = meetingMetadata[meetingId];
+    setSelectedMeeting(
+      meta
+        ? { id: meetingId, ...meta }
+        : { id: meetingId, title: `Meeting #${meetingId}`, date: 'Oct 24, 2024 · 10:00 AM' },
+    );
+    handleTabChange('transcript-review');
   };
 
   const handleViewSummary = (meetingId: string) => {
-    console.log('Viewing summary for meeting:', meetingId);
+    handleReviewMeeting(meetingId);
   };
 
   const handleNewMeeting = () => {
-    setCurrentTab('capture-and-ingest');
+    handleTabChange('capture-and-ingest');
     onNewMeeting?.();
   };
 
@@ -36,7 +81,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
       {/* Fixed Sidebar */}
       <Sidebar
         currentTab={currentTab}
-        onTabChange={setCurrentTab}
+        onTabChange={handleTabChange}
         onSignOut={onSignOut}
       />
 
@@ -52,10 +97,33 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
         <main className="w-full pt-16 bg-surface min-h-screen">
           {currentTab === 'capture-and-ingest' ? (
             <CaptureIngestView
-              onBackToDashboard={() => setCurrentTab('dashboard')}
+              onBackToDashboard={() => handleTabChange('dashboard')}
               onExtractionComplete={(data) => {
                 console.log('Action extraction completed:', data);
+                setSelectedMeeting({
+                  id: 'extracted-session',
+                  title: data.title,
+                  date: `${new Date().toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                  })} · Extracted`,
+                });
+                handleTabChange('transcript-review');
               }}
+            />
+          ) : currentTab === 'transcript-review' ? (
+            <TranscriptReviewView
+              meetingTitle={selectedMeeting?.title}
+              meetingDate={selectedMeeting?.date}
+              onBackToDashboard={() => handleTabChange('dashboard')}
+              onPushItems={(items) => {
+                console.log('Action items pushed:', items);
+              }}
+            />
+          ) : currentTab === 'integrations-and-settings' ? (
+            <IntegrationsSettingsView
+              onBackToDashboard={() => handleTabChange('dashboard')}
             />
           ) : (
             <div className="flex flex-col w-full">
@@ -111,7 +179,9 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                 />
 
                 {/* Quick Dispatch Summary & Health Widgets */}
-                <DispatchWidgets />
+                <DispatchWidgets
+                  onOpenIntegrations={() => handleTabChange('integrations-and-settings')}
+                />
               </div>
             </div>
           )}

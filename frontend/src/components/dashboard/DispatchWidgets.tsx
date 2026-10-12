@@ -1,6 +1,10 @@
 import React from 'react';
 
-export const DispatchWidgets: React.FC = () => {
+interface DispatchWidgetsProps {
+  onOpenIntegrations?: () => void;
+}
+
+export const DispatchWidgets: React.FC<DispatchWidgetsProps> = ({ onOpenIntegrations }) => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-space-md">
       {/* Auto-Dispatch Card */}
@@ -19,7 +23,12 @@ export const DispatchWidgets: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex items-center gap-space-sm shrink-0">
+        <button
+          type="button"
+          onClick={onOpenIntegrations}
+          className="flex items-center gap-space-sm shrink-0 px-3 py-1.5 rounded-lg hover:bg-surface-container-low transition-colors cursor-pointer border border-transparent hover:border-surface-variant/40"
+          title="Configure Integrations & Settings"
+        >
           <span className="font-label-sm text-label-sm text-secondary uppercase tracking-wider font-semibold">
             Integrations
           </span>
@@ -43,7 +52,8 @@ export const DispatchWidgets: React.FC = () => {
               N
             </span>
           </div>
-        </div>
+          <span className="material-symbols-outlined text-secondary text-[16px]">chevron_right</span>
+        </button>
       </div>
 
       {/* Sync Engine Health */}

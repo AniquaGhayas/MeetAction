@@ -609,9 +609,9 @@ Marcus Vance: I'll provision the replica cluster in us-east-2 and configure Redi
           <button
             type="button"
             onClick={handleGenerate}
-            disabled={isProcessing}
+            disabled={isProcessing || !hasContent}
             className={`w-full h-12 bg-primary hover:bg-primary-container text-on-primary font-headline-sm text-headline-sm font-medium rounded-lg shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 group cursor-pointer active:scale-[0.99] ${
-              isProcessing ? 'opacity-80 cursor-wait' : ''
+              isProcessing || !hasContent ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
             <span className="material-symbols-outlined text-[20px] transition-transform group-hover:rotate-12">
