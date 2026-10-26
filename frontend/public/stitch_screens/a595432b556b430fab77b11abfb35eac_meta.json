@@ -1,0 +1,24 @@
+{
+  "content": [
+    {
+      "text": "{\"name\":\"projects/7606118479227264216/screens/a595432b556b430fab77b11abfb35eac\",\"title\":\"Transcript Review & Action Items\",\"screenshot\":{\"name\":\"projects/7606118479227264216/screens/a595432b556b430fab77b11abfb35eac/fileEntries/screenshot\",\"downloadUrl\":\"https://lh3.googleusercontent.com/aida/AEtjO1UuaYjU-krUojzQRKPUtm8iOUSodHc5OI0ojPr0-t_1of-eCYs_lim0Z9WBubYYewc5fL8EdtAP-kekGHbVhV-RSytweR4xBYVB0KyjpvKf2qEbJerpOoZI7d6XYcUICdeL1-mvT88auZclYvbBzeXw86_4XYQweiywwTh1SpKHOY4jrEV-o9oEJusGCt3rKTqm345CkHFXWex-aX-__bDfCEZNBzVdrSGlkUxbiu4B93CmQsD8e2fzams\"},\"htmlCode\":{\"name\":\"projects/7606118479227264216/screens/a595432b556b430fab77b11abfb35eac/fileEntries/html\",\"downloadUrl\":\"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1Y2YwMjliNmRlM2QwMzM4NWVlYmM4MzI4YzcwEgsSBxDqk7yjtAoYAZIBIwoKcHJvamVjdF9pZBIVQhM3NjA2MTE4NDc5MjI3MjY0MjE2&filename=&opi=89354086\",\"mimeType\":\"text/html\"},\"width\":\"2560\",\"height\":\"2530\",\"deviceType\":\"DESKTOP\"}",
+      "type": "text"
+    }
+  ],
+  "structuredContent": {
+    "deviceType": "DESKTOP",
+    "height": "2530",
+    "htmlCode": {
+      "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1Y2YwMjliNmRlM2QwMzM4NWVlYmM4MzI4YzcwEgsSBxDqk7yjtAoYAZIBIwoKcHJvamVjdF9pZBIVQhM3NjA2MTE4NDc5MjI3MjY0MjE2&filename=&opi=89354086",
+      "mimeType": "text/html",
+      "name": "projects/7606118479227264216/screens/a595432b556b430fab77b11abfb35eac/fileEntries/html"
+    },
+    "name": "projects/7606118479227264216/screens/a595432b556b430fab77b11abfb35eac",
+    "screenshot": {
+      "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1UuaYjU-krUojzQRKPUtm8iOUSodHc5OI0ojPr0-t_1of-eCYs_lim0Z9WBubYYewc5fL8EdtAP-kekGHbVhV-RSytweR4xBYVB0KyjpvKf2qEbJerpOoZI7d6XYcUICdeL1-mvT88auZclYvbBzeXw86_4XYQweiywwTh1SpKHOY4jrEV-o9oEJusGCt3rKTqm345CkHFXWex-aX-__bDfCEZNBzVdrSGlkUxbiu4B93CmQsD8e2fzams",
+      "name": "projects/7606118479227264216/screens/a595432b556b430fab77b11abfb35eac/fileEntries/screenshot"
+    },
+    "title": "Transcript Review & Action Items",
+    "width": "2560"
+  }
+}

@@ -283,9 +283,8 @@ export const TranscriptReviewView: React.FC<TranscriptReviewViewProps> = ({
               Export Summary
             </button>
             <button
-              className={`px-space-lg py-2 rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md font-semibold transition-all inline-flex items-center gap-2 shadow-sm cursor-pointer ${
-                approvedCount === 0 ? 'opacity-50 pointer-events-none' : ''
-              }`}
+              className={`px-space-lg py-2 rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md font-semibold transition-all inline-flex items-center gap-2 shadow-sm cursor-pointer ${approvedCount === 0 ? 'opacity-50 pointer-events-none' : ''
+                }`}
               type="button"
               onClick={handlePush}
             >
@@ -466,9 +465,8 @@ export const TranscriptReviewView: React.FC<TranscriptReviewViewProps> = ({
             {actionItems.map((item) => (
               <div
                 key={item.id}
-                className={`action-card bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col gap-space-md transition-all hover:shadow-md ${
-                  item.excluded ? 'opacity-40' : ''
-                }`}
+                className={`action-card bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col gap-space-md transition-all hover:shadow-md ${item.excluded ? 'opacity-40' : ''
+                  }`}
               >
                 <div className="flex items-center justify-between gap-space-sm pb-space-xs">
                   <div className="flex items-center gap-space-sm">
@@ -480,11 +478,10 @@ export const TranscriptReviewView: React.FC<TranscriptReviewViewProps> = ({
                         onChange={() => handleToggleItem(item.id)}
                       />
                       <span
-                        className={`w-5 h-5 rounded flex items-center justify-center shadow-sm transition-colors ${
-                          item.included && !item.excluded
+                        className={`w-5 h-5 rounded flex items-center justify-center shadow-sm transition-colors ${item.included && !item.excluded
                             ? 'bg-primary text-on-primary'
                             : 'bg-surface-container-high text-transparent'
-                        }`}
+                          }`}
                       >
                         <span className="material-symbols-outlined text-[16px]">check</span>
                       </span>
@@ -623,9 +620,8 @@ export const TranscriptReviewView: React.FC<TranscriptReviewViewProps> = ({
               Reset
             </button>
             <button
-              className={`px-space-xl py-2.5 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-headline-sm text-headline-sm font-semibold transition-all inline-flex items-center gap-2 shadow-sm cursor-pointer ${
-                approvedCount === 0 ? 'opacity-50 pointer-events-none' : ''
-              }`}
+              className={`px-space-xl py-2.5 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-headline-sm text-headline-sm font-semibold transition-all inline-flex items-center gap-2 shadow-sm cursor-pointer ${approvedCount === 0 ? 'opacity-50 pointer-events-none' : ''
+                }`}
               type="button"
               onClick={handlePush}
             >

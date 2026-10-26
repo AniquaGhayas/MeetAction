@@ -1,0 +1,24 @@
+{
+  "content": [
+    {
+      "text": "{\"name\":\"projects/7606118479227264216/screens/5087e825a06d4a9faa271df4f999c8c6\",\"title\":\"Capture & Ingest Meeting\",\"screenshot\":{\"name\":\"projects/7606118479227264216/screens/5087e825a06d4a9faa271df4f999c8c6/fileEntries/screenshot\",\"downloadUrl\":\"https://lh3.googleusercontent.com/aida/AEtjO1WLa6ah4ehwUHcqty0HGUoOPDRlG9L1WGYLRSc13N_HzUSgxJUckxjcfXTyjGEzNVj2XIArHmoIDHTpybRLr2k2naZODNFlSh3X5htNSs1CxMxi2lZYi4PrLslhik2Ib4K4xKywInG0t_o4w8CBQ0VOmbvxkBNjwjnJ6T0rG7hE12jtIZst52VA55lVFkQq2i3sQijDEfe_Gb2vjuwgFqxFPpK5El8q2qxj7U0wtkZagfdwgXqplmWLPqg\"},\"htmlCode\":{\"name\":\"projects/7606118479227264216/screens/5087e825a06d4a9faa271df4f999c8c6/fileEntries/html\",\"downloadUrl\":\"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1Y2YwMjk1NTk3NzMwMjhmMDkzYWEzMmQ1NDVkEgsSBxDqk7yjtAoYAZIBIwoKcHJvamVjdF9pZBIVQhM3NjA2MTE4NDc5MjI3MjY0MjE2&filename=&opi=89354086\",\"mimeType\":\"text/html\"},\"width\":\"2560\",\"height\":\"2048\",\"deviceType\":\"DESKTOP\"}",
+      "type": "text"
+    }
+  ],
+  "structuredContent": {
+    "deviceType": "DESKTOP",
+    "height": "2048",
+    "htmlCode": {
+      "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1Y2YwMjk1NTk3NzMwMjhmMDkzYWEzMmQ1NDVkEgsSBxDqk7yjtAoYAZIBIwoKcHJvamVjdF9pZBIVQhM3NjA2MTE4NDc5MjI3MjY0MjE2&filename=&opi=89354086",
+      "mimeType": "text/html",
+      "name": "projects/7606118479227264216/screens/5087e825a06d4a9faa271df4f999c8c6/fileEntries/html"
+    },
+    "name": "projects/7606118479227264216/screens/5087e825a06d4a9faa271df4f999c8c6",
+    "screenshot": {
+      "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1WLa6ah4ehwUHcqty0HGUoOPDRlG9L1WGYLRSc13N_HzUSgxJUckxjcfXTyjGEzNVj2XIArHmoIDHTpybRLr2k2naZODNFlSh3X5htNSs1CxMxi2lZYi4PrLslhik2Ib4K4xKywInG0t_o4w8CBQ0VOmbvxkBNjwjnJ6T0rG7hE12jtIZst52VA55lVFkQq2i3sQijDEfe_Gb2vjuwgFqxFPpK5El8q2qxj7U0wtkZagfdwgXqplmWLPqg",
+      "name": "projects/7606118479227264216/screens/5087e825a06d4a9faa271df4f999c8c6/fileEntries/screenshot"
+    },
+    "title": "Capture & Ingest Meeting",
+    "width": "2560"
+  }
+}

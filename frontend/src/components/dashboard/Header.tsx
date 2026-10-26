@@ -1,4 +1,5 @@
 import React from 'react';
+import { ThemeToggle } from '../common/ThemeToggle';
 
 interface HeaderProps {
   searchQuery?: string;
@@ -12,7 +13,7 @@ export const Header: React.FC<HeaderProps> = ({
   onNotificationsClick,
 }) => {
   return (
-    <header className="fixed top-0 left-64 right-0 h-16 bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 border-b border-surface-variant/40">
+    <header className="fixed top-0 left-64 right-0 h-16 bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 border-b border-surface-container-highest/60">
       <div className="h-16 w-full px-space-xl flex items-center justify-between gap-space-md">
         {/* Brand & Sync indicator */}
         <div className="flex items-center gap-space-md">
@@ -59,6 +60,10 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Header Right Actions */}
         <div className="flex items-center gap-space-sm">
+          {/* Theme Switcher Toggle */}
+          <ThemeToggle variant="button" className="hidden sm:inline-flex" />
+          <ThemeToggle variant="icon" className="sm:hidden" />
+
           <button
             type="button"
             onClick={onNotificationsClick}

@@ -1,4 +1,5 @@
 import React from 'react';
+import { ThemeToggle } from '../common/ThemeToggle';
 
 interface SidebarProps {
   currentTab?: string;
@@ -84,9 +85,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
       </div>
 
-      {/* User Info / Sign Out */}
-      <div className="p-space-md bg-surface-container-low border-t border-surface-variant/40">
-        <div className="flex items-center justify-between p-space-xs rounded-lg bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
+      <div className="flex flex-col gap-space-xs">
+        {/* Theme Mode Switcher in Sidebar */}
+        <div className="px-space-md">
+          <ThemeToggle variant="sidebar" />
+        </div>
+
+        {/* User Info / Sign Out */}
+        <div className="p-space-md bg-surface-container-low border-t border-surface-container-highest/60">
+          <div className="flex items-center justify-between p-space-xs rounded-lg bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] border border-surface-container-highest/30">
           <div className="flex items-center gap-space-sm min-w-0">
             <div className="w-8 h-8 rounded-full bg-secondary-fixed flex items-center justify-center font-label-md text-label-md text-on-secondary-fixed font-semibold shrink-0">
               AR
@@ -110,6 +117,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </button>
         </div>
       </div>
-    </aside>
-  );
+    </div>
+  </aside>
+);
 };

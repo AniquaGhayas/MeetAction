@@ -1,6 +1,7 @@
 import React from 'react';
 import { LoginCard } from '../components/auth/LoginCard';
 import { PageFooter } from '../components/auth/PageFooter';
+import { ThemeToggle } from '../components/common/ThemeToggle';
 
 interface LoginPageProps {
   onLoginSuccess?: () => void;
@@ -23,6 +24,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
 
   return (
     <div className="bg-surface font-body-md text-on-surface antialiased min-h-screen flex items-center justify-center p-space-md relative overflow-x-hidden">
+      {/* Top Bar Theme Toggle */}
+      <div className="absolute top-4 right-4 z-20">
+        <ThemeToggle variant="button" />
+      </div>
+
       <main className="w-full max-w-md mx-auto relative">
         <div className="flex flex-col w-full items-center justify-center py-space-sm sm:py-space-md">
           {/* Subtle decorative ambient radial glow behind auth card */}

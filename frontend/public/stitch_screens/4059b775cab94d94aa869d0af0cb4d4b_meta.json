@@ -1,0 +1,24 @@
+{
+  "content": [
+    {
+      "text": "{\"name\":\"projects/7606118479227264216/screens/4059b775cab94d94aa869d0af0cb4d4b\",\"title\":\"Meeting Archives & Dashboard\",\"screenshot\":{\"name\":\"projects/7606118479227264216/screens/4059b775cab94d94aa869d0af0cb4d4b/fileEntries/screenshot\",\"downloadUrl\":\"https://lh3.googleusercontent.com/aida/AEtjO1XxsYNFsDlCzqWO7Ep9ZUXsgGh1dcD9miiFtHuDw8vi3Ko0Fe47m2JpxnLqA6A3q_vcmH14_eK1gcgXdBMesrRdegHApJiQFWI9hu5iVnhLfyUUjwMUccmwx_4tVMZVwLe-BF0zKK3gE85LaiS2iu8yw-GcjxumYUd8mdNLosL4KXDbWrvbzaYinSxLH0_J_UgJWhdWAv_DkLE2vL6IHLQpf4ielqilz-c8Sc8xvcCKvPsPXHxUr_P0NQ\"},\"htmlCode\":{\"name\":\"projects/7606118479227264216/screens/4059b775cab94d94aa869d0af0cb4d4b/fileEntries/html\",\"downloadUrl\":\"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1Y2YwMmE1Y2VmYWMwN2UwMDQwN2FjMTA5MWMwEgsSBxDqk7yjtAoYAZIBIwoKcHJvamVjdF9pZBIVQhM3NjA2MTE4NDc5MjI3MjY0MjE2&filename=&opi=89354086\",\"mimeType\":\"text/html\"},\"width\":\"2560\",\"height\":\"2048\",\"deviceType\":\"DESKTOP\"}",
+      "type": "text"
+    }
+  ],
+  "structuredContent": {
+    "deviceType": "DESKTOP",
+    "height": "2048",
+    "htmlCode": {
+      "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1Y2YwMmE1Y2VmYWMwN2UwMDQwN2FjMTA5MWMwEgsSBxDqk7yjtAoYAZIBIwoKcHJvamVjdF9pZBIVQhM3NjA2MTE4NDc5MjI3MjY0MjE2&filename=&opi=89354086",
+      "mimeType": "text/html",
+      "name": "projects/7606118479227264216/screens/4059b775cab94d94aa869d0af0cb4d4b/fileEntries/html"
+    },
+    "name": "projects/7606118479227264216/screens/4059b775cab94d94aa869d0af0cb4d4b",
+    "screenshot": {
+      "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1XxsYNFsDlCzqWO7Ep9ZUXsgGh1dcD9miiFtHuDw8vi3Ko0Fe47m2JpxnLqA6A3q_vcmH14_eK1gcgXdBMesrRdegHApJiQFWI9hu5iVnhLfyUUjwMUccmwx_4tVMZVwLe-BF0zKK3gE85LaiS2iu8yw-GcjxumYUd8mdNLosL4KXDbWrvbzaYinSxLH0_J_UgJWhdWAv_DkLE2vL6IHLQpf4ielqilz-c8Sc8xvcCKvPsPXHxUr_P0NQ",
+      "name": "projects/7606118479227264216/screens/4059b775cab94d94aa869d0af0cb4d4b/fileEntries/screenshot"
+    },
+    "title": "Meeting Archives & Dashboard",
+    "width": "2560"
+  }
+}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { ThemeToggle } from '../common/ThemeToggle';
 
 interface IntegrationsSettingsViewProps {
   onBackToDashboard?: () => void;
@@ -119,7 +120,8 @@ export const IntegrationsSettingsView: React.FC<IntegrationsSettingsViewProps> =
           </div>
 
           <div className="flex items-center gap-space-sm self-start md:self-auto">
-            <div className="flex items-center gap-1.5 px-space-md py-1.5 rounded-lg bg-surface-container text-on-surface font-label-md text-label-md shadow-sm">
+            <ThemeToggle variant="button" />
+            <div className="flex items-center gap-1.5 px-space-md py-1.5 rounded-lg bg-surface-container text-on-surface font-label-md text-label-md shadow-sm border border-surface-container-highest/60">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span className="font-medium text-on-surface">OAuth 2.0 Enabled</span>
               <span className="material-symbols-outlined text-[16px] text-on-surface-variant ml-0.5">
@@ -642,6 +644,40 @@ export const IntegrationsSettingsView: React.FC<IntegrationsSettingsViewProps> =
                 <div className="w-11 h-6 bg-surface-container rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary shadow-inner" />
               </div>
             </label>
+          </div>
+        </div>
+
+        {/* Section 4: Workspace Appearance & Theme */}
+        <div className="flex flex-col gap-space-md">
+          <div className="flex items-center gap-space-sm">
+            <div className="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+              <span className="material-symbols-outlined text-[20px]">palette</span>
+            </div>
+            <div>
+              <h2 className="font-headline-sm text-headline-sm text-on-surface font-semibold">
+                Workspace Appearance &amp; Color Theme
+              </h2>
+              <p className="font-body-sm text-body-sm text-on-surface-variant">
+                Toggle between Light Mode and Stitch Dark Mode theme across all console views.
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg flex flex-col sm:flex-row sm:items-center justify-between gap-space-md border border-surface-container-highest/60">
+            <div className="flex items-center gap-space-md">
+              <div className="w-10 h-10 rounded-xl bg-surface-container-high flex items-center justify-center text-primary shrink-0">
+                <span className="material-symbols-outlined text-[24px]">contrast</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="font-body-lg text-body-lg font-semibold text-on-surface">
+                  Interface Theme Mode
+                </span>
+                <span className="font-body-sm text-body-sm text-on-surface-variant">
+                  Select your preferred workspace aesthetic. Syncs automatically to your local browser storage.
+                </span>
+              </div>
+            </div>
+            <ThemeToggle variant="segmented" />
           </div>
         </div>
       </div>
