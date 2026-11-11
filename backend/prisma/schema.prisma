@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String        @id @default(uuid())
+  email        String        @unique
+  passwordHash String?
+  oauthId      String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  integrations Integration[]
+  meetings     Meeting[]
+
+  @@map("users")
+}
+
+model Integration {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  provider     String   // "jira" | "trello"
+  accessToken  String   // encrypted AES-256
+  refreshToken String?  // encrypted AES-256
+  instanceUrl  String?
+  apiKey       String?
+  connectedAt  DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([userId, provider])
+  @@map("integrations")
+}
+
+model Meeting {
+  id            String       @id @default(uuid())
+  userId        String
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title         String
+  sourceType    String       // "text" | "file" | "audio"
+  rawTranscript String?      @db.Text
+  audioFileUrl  String?
+  status        String       @default("processing") // "processing" | "ready_for_review" | "completed" | "failed"
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  actionItems   ActionItem[]
+
+  @@map("meetings")
+}
+
+model ActionItem {
+  id                 String    @id @default(uuid())
+  meetingId          String
+  meeting            Meeting   @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  description        String
+  assigneeRaw        String?
+  assigneeResolvedId String?
+  dueDate            DateTime?
+  sourceSnippet      String?   @db.Text
+  status             String    @default("pending") // "pending" | "approved" | "excluded" | "pushed"
+  pushedTo           String?   // "jira" | "trello"
+  externalId         String?
+  externalUrl        String?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  @@map("action_items")
+}
+

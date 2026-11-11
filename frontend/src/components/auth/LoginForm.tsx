@@ -1,46 +1,84 @@
 import React, { useState } from 'react';
 
 interface LoginFormProps {
-  onSubmit?: (credentials: { email: string; password: string; rememberDevice: boolean }) => void;
+  onSubmit?: (credentials: { email: string; password: string; isRegister: boolean }) => Promise<void>;
+  errorMessage?: string | null;
 }
 
-export const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
+export const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, errorMessage: externalError }) => {
+  const [isRegister, setIsRegister] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberDevice, setRememberDevice] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
-  const [status, setStatus] = useState<'idle' | 'authenticating' | 'connecting'>('idle');
+  const [status, setStatus] = useState<'idle' | 'submitting'>('idle');
+  const [localError, setLocalError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (status !== 'idle') return;
 
-    setStatus('authenticating');
-    if (onSubmit) {
-      onSubmit({ email, password, rememberDevice });
-    }
+    setLocalError(null);
+    setStatus('submitting');
 
-    setTimeout(() => {
-      setStatus('connecting');
-      setTimeout(() => {
-        setStatus('idle');
-      }, 1000);
-    }, 800);
+    try {
+      if (onSubmit) {
+        await onSubmit({ email, password, isRegister });
+      }
+    } catch (err: any) {
+      setLocalError(err.message || 'Authentication failed');
+    } finally {
+      setStatus('idle');
+    }
   };
 
+  const error = localError || externalError;
+
   const getButtonText = () => {
-    switch (status) {
-      case 'authenticating':
-        return 'Authenticating...';
-      case 'connecting':
-        return 'Connecting Workspace...';
-      default:
-        return 'Sign In to Workspace';
+    if (status === 'submitting') {
+      return isRegister ? 'Creating Workspace...' : 'Authenticating...';
     }
+    return isRegister ? 'Create Workspace Account' : 'Sign In to Workspace';
   };
 
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+      {/* Error Feedback Banner */}
+      {error && (
+        <div className="p-3 rounded-lg bg-error-container/20 border border-error/40 text-error text-body-sm flex items-start gap-2 animate-fadeIn">
+          <span className="material-symbols-outlined text-[18px] shrink-0 mt-0.5">error</span>
+          <span>{error}</span>
+        </div>
+      )}
+
+      {/* Mode Switch (Sign In vs Register) */}
+      <div className="flex items-center justify-center p-1 rounded-lg bg-surface-container-low border border-surface-variant/40 text-label-sm">
+        <button
+          type="button"
+          onClick={() => {
+            setIsRegister(false);
+            setLocalError(null);
+          }}
+          className={`flex-1 py-1.5 rounded-md font-medium transition-all ${
+            !isRegister ? 'bg-surface-container-lowest text-primary shadow-xs' : 'text-secondary hover:text-on-surface'
+          }`}
+        >
+          Sign In
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setIsRegister(true);
+            setLocalError(null);
+          }}
+          className={`flex-1 py-1.5 rounded-md font-medium transition-all ${
+            isRegister ? 'bg-surface-container-lowest text-primary shadow-xs' : 'text-secondary hover:text-on-surface'
+          }`}
+        >
+          Create Account
+        </button>
+      </div>
+
       {/* Work Email Field */}
       <div className="flex flex-col gap-1.5">
         <label
@@ -48,7 +86,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
           className="font-label-md text-label-md text-on-surface font-medium flex items-center justify-between"
         >
           <span>Work Email</span>
-          <span className="text-secondary text-[11px]">Domain SSO enabled</span>
+          <span className="text-secondary text-[11px]">Secure &amp; encrypted</span>
         </label>
         <div className="relative flex items-center">
           <span className="material-symbols-outlined absolute left-3 text-secondary text-[18px] pointer-events-none select-none">
@@ -73,12 +111,14 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
           <label htmlFor="userPassword" className="font-label-md text-label-md text-on-surface font-medium">
             Password
           </label>
-          <a
-            href="#forgot-password"
-            className="font-label-md text-label-md text-primary hover:text-primary-container transition-colors"
-          >
-            Forgot password?
-          </a>
+          {!isRegister && (
+            <a
+              href="#forgot-password"
+              className="font-label-md text-label-md text-primary hover:text-primary-container transition-colors"
+            >
+              Forgot password?
+            </a>
+          )}
         </div>
         <div className="relative flex items-center">
           <span className="material-symbols-outlined absolute left-3 text-secondary text-[18px] pointer-events-none select-none">
@@ -89,6 +129,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
             name="password"
             type={showPassword ? 'text' : 'password'}
             required
+            minLength={6}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••••••"

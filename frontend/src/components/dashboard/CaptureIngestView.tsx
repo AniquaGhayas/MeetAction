@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { api } from '../../api/client';
 
 interface CaptureIngestViewProps {
   onBackToDashboard?: () => void;
-  onExtractionComplete?: (data: { title: string; destination: string; count: number }) => void;
+  onExtractionComplete?: (data: { meetingId: string; title: string; destination: string; count: number }) => void;
 }
 
 type IngestMode = 'paste' | 'upload' | 'record';
@@ -142,29 +143,63 @@ Marcus Vance: I'll provision the replica cluster in us-east-2 and configure Redi
     }
   };
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
+    if (!transcript.trim()) return;
+
     setIsProcessing(true);
-    setProcessingStatus('Synthesizing Decisions & Action Items...');
+    setProcessingStatus('Submitting transcript to extraction pipeline...');
 
-    setTimeout(() => {
-      setProcessingStatus('Extracting assignees, deadlines & dispatch tickets...');
-      setTimeout(() => {
-        setIsProcessing(false);
-        setProcessingStatus('Extraction complete! 8 tasks generated.');
+    try {
+      const finalTitle = meetingTitle.trim() || 'Sprint Planning & Architecture Sync';
 
-        const finalTitle = meetingTitle.trim() || 'Sprint Planning & Architecture Sync';
-        onExtractionComplete?.({
-          title: finalTitle,
-          destination,
-          count: 8,
-        });
+      // 1. Enqueue extraction job on backend API
+      const createRes = await api.createMeeting({
+        title: finalTitle,
+        transcript: transcript.trim(),
+        sourceType: 'text',
+      });
 
-        // Reset status feedback after delay
-        setTimeout(() => {
-          setProcessingStatus(null);
-        }, 3000);
-      }, 1500);
-    }, 1800);
+      const meetingId = createRes.meetingId;
+      setProcessingStatus('Analyzing transcript with AI & extracting action items...');
+
+      // 2. Poll until status is ready_for_review
+      let attempts = 0;
+      const maxAttempts = 30; // 60 seconds
+      let completed = false;
+
+      while (attempts < maxAttempts) {
+        attempts++;
+        await new Promise((r) => setTimeout(r, 2000));
+
+        const { meeting } = await api.getMeeting(meetingId);
+        if (meeting.status === 'ready_for_review') {
+          completed = true;
+          const { items } = await api.getMeetingItems(meetingId);
+          setIsProcessing(false);
+          setProcessingStatus(`Extraction complete! ${items.length} tasks generated.`);
+
+          onExtractionComplete?.({
+            meetingId,
+            title: meeting.title,
+            destination,
+            count: items.length,
+          });
+          break;
+        } else if (meeting.status === 'failed') {
+          throw new Error('LLM extraction job failed. Please check transcript content or API credits.');
+        } else {
+          setProcessingStatus(`Extracting assignees, deadlines & dispatch tickets... (${attempts * 2}s)`);
+        }
+      }
+
+      if (!completed) {
+        throw new Error('Processing timed out. The meeting will appear in your archives once complete.');
+      }
+    } catch (err: any) {
+      console.error('Extraction error:', err);
+      setIsProcessing(false);
+      setProcessingStatus(`Error: ${err.message || 'Failed to extract action items'}`);
+    }
   };
 
   const wordCount = transcript.trim() ? transcript.trim().split(/\s+/).length : 0;

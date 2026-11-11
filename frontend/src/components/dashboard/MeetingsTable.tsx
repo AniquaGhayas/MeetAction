@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { api } from '../../api/client';
 
 interface Meeting {
   id: string;
@@ -77,10 +78,46 @@ export const MeetingsTable: React.FC<MeetingsTableProps> = ({
   onReviewMeeting,
   onViewSummary,
 }) => {
+  const [meetings, setMeetings] = useState<Meeting[]>(mockMeetings);
   const [filterStatus, setFilterStatus] = useState<'All' | 'Synced' | 'Needs Review'>('All');
   const [tableSearch, setTableSearch] = useState('');
 
-  const filteredMeetings = mockMeetings.filter((meeting) => {
+  useEffect(() => {
+    let isMounted = true;
+    api.getMeetings()
+      .then((res) => {
+        if (!isMounted) return;
+        if (res.meetings && res.meetings.length > 0) {
+          const mapped: Meeting[] = res.meetings.map((m) => {
+            const dateStr = new Date(m.createdAt).toLocaleDateString('en-US', {
+              month: 'short',
+              day: 'numeric',
+              year: 'numeric',
+            });
+            return {
+              id: m.id,
+              title: m.title,
+              source: m.sourceType === 'audio' ? 'Audio Session' : 'Transcript Text',
+              icon: m.sourceType === 'audio' ? 'mic' : 'description',
+              date: dateStr,
+              duration: '—',
+              actionItemsCount: m._count?.actionItems || 0,
+              status: m.status === 'completed' ? 'Synced' : 'Needs Review',
+            };
+          });
+          setMeetings(mapped);
+        }
+      })
+      .catch((err) => {
+        console.warn('Could not fetch meetings list from backend, using fallback data:', err);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const filteredMeetings = meetings.filter((meeting) => {
     const matchesFilter = filterStatus === 'All' || meeting.status === filterStatus;
     const matchesSearch =
       meeting.title.toLowerCase().includes(tableSearch.toLowerCase()) ||

@@ -149,11 +149,6 @@ npm install @tanstack/react-query axios tailwindcss
 6. **History screen** → lists past meetings via a `GET /meetings` list endpoint (add this to backend if not already there)
 7. **Integrations settings screen** → "Connect Jira" / "Connect Trello" buttons that redirect to your OAuth start routes
 
-### Step 17: Wire pixel-art/UI assets (if using your Aseprite/Stitch assets here)
-- Drop exported PNG/sprite sheets into `src/assets/`
-- Apply `image-rendering: pixelated;` on any pixel-art images
-- Keep them to accent moments (empty states, success screen) per your earlier plan, not dense UI text
-
 **Checkpoint:** a full manual run — paste a transcript, review items, push to a real test Jira/Trello, see it land — all driven from the UI, no Postman needed.
 
 ---
