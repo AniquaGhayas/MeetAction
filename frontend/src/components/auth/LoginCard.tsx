@@ -7,7 +7,7 @@ import { AuthCallout } from './AuthCallout';
 interface LoginCardProps {
   onGoogleSignIn?: () => void;
   onAtlassianSignIn?: () => void;
-  onEmailSignIn?: (credentials: { email: string; password: string; rememberDevice: boolean }) => void;
+  onEmailSignIn?: (credentials: { email: string; password: string; isRegister: boolean }) => Promise<void>;
 }
 
 export const LoginCard: React.FC<LoginCardProps> = ({

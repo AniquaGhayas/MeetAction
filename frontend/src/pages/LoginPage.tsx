@@ -2,6 +2,7 @@ import React from 'react';
 import { LoginCard } from '../components/auth/LoginCard';
 import { PageFooter } from '../components/auth/PageFooter';
 import { ThemeToggle } from '../components/common/ThemeToggle';
+import { api } from '../api/client';
 
 interface LoginPageProps {
   onLoginSuccess?: () => void;
@@ -9,17 +10,20 @@ interface LoginPageProps {
 
 export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
   const handleGoogleSignIn = () => {
-    console.log('Initiating Google SSO flow...');
+    console.log('Google OAuth flow will be configured in integration phase');
   };
 
   const handleAtlassianSignIn = () => {
-    console.log('Initiating Atlassian Jira SSO flow...');
+    console.log('Atlassian OAuth flow will be configured in integration phase');
   };
 
-  const handleEmailSignIn = (credentials: { email: string; password: string; rememberDevice: boolean }) => {
-    console.log('Authenticating credentials:', credentials);
-    // Simulate auth success — replace with real API call
-    setTimeout(() => onLoginSuccess?.(), 1800);
+  const handleEmailSignIn = async (credentials: { email: string; password: string; isRegister: boolean }) => {
+    if (credentials.isRegister) {
+      await api.register(credentials.email, credentials.password);
+    } else {
+      await api.login(credentials.email, credentials.password);
+    }
+    onLoginSuccess?.();
   };
 
   return (

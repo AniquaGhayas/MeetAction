@@ -95,22 +95,49 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className="p-space-md bg-surface-container-low border-t border-surface-container-highest/60">
           <div className="flex items-center justify-between p-space-xs rounded-lg bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] border border-surface-container-highest/30">
           <div className="flex items-center gap-space-sm min-w-0">
-            <div className="w-8 h-8 rounded-full bg-secondary-fixed flex items-center justify-center font-label-md text-label-md text-on-secondary-fixed font-semibold shrink-0">
-              AR
+            <div className="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center font-label-md text-label-md font-bold shrink-0">
+              {(() => {
+                const uStr = localStorage.getItem('user');
+                if (uStr) {
+                  try {
+                    const u = JSON.parse(uStr);
+                    return (u.email || 'US').slice(0, 2).toUpperCase();
+                  } catch {}
+                }
+                return 'MA';
+              })()}
             </div>
             <div className="flex flex-col truncate">
               <span className="font-label-md text-label-md text-on-surface font-semibold truncate">
-                Alex Rivera
+                {(() => {
+                  const uStr = localStorage.getItem('user');
+                  if (uStr) {
+                    try {
+                      const u = JSON.parse(uStr);
+                      return u.email.split('@')[0];
+                    } catch {}
+                  }
+                  return 'Workspace User';
+                })()}
               </span>
               <span className="font-label-sm text-label-sm text-on-surface-variant truncate">
-                alex@acme.corp
+                {(() => {
+                  const uStr = localStorage.getItem('user');
+                  if (uStr) {
+                    try {
+                      const u = JSON.parse(uStr);
+                      return u.email;
+                    } catch {}
+                  }
+                  return 'Active Session';
+                })()}
               </span>
             </div>
           </div>
           <button
             type="button"
             onClick={onSignOut}
-            className="text-on-surface-variant hover:text-primary p-1.5 rounded hover:bg-surface-container transition-colors cursor-pointer"
+            className="text-on-surface-variant hover:text-error p-1.5 rounded hover:bg-surface-container transition-colors cursor-pointer"
             title="Sign out of MeetAction"
           >
             <span className="material-symbols-outlined text-[18px]">logout</span>

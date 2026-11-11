@@ -1,28 +1,28 @@
 import { useState, useEffect } from 'react';
 import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
+import { api } from './api/client';
 
 type AppScreen = 'login' | 'dashboard';
 
 function App() {
   const [screen, setScreen] = useState<AppScreen>(() => {
+    if (!api.isAuthenticated()) {
+      return 'login';
+    }
     const hash = window.location.hash.toLowerCase();
     if (hash === '#login') return 'login';
-    // If user has a dashboard route or hash is present, or defaults to dashboard
-    if (
-      hash === '#dashboard' ||
-      hash === '#transcript-review' ||
-      hash === '#capture-and-ingest' ||
-      hash === '#integrations-and-settings'
-    ) {
-      return 'dashboard';
-    }
     return 'dashboard';
   });
 
   useEffect(() => {
     const handleHash = () => {
       const hash = window.location.hash.toLowerCase();
+      if (!api.isAuthenticated()) {
+        setScreen('login');
+        return;
+      }
+
       if (hash === '#login') {
         setScreen('login');
       } else if (
@@ -44,6 +44,7 @@ function App() {
   };
 
   const handleSignOut = () => {
+    api.logout();
     setScreen('login');
     window.location.hash = 'login';
   };

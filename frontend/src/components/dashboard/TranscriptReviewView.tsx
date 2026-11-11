@@ -1,7 +1,8 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { api } from '../../api/client';
 
 interface ActionItem {
-  id: number;
+  id: number | string;
   timestamp: string;
   title: string;
   context?: string;
@@ -35,6 +36,7 @@ interface IntermediaryDialogue {
 interface TranscriptReviewViewProps {
   onBackToDashboard?: () => void;
   onPushItems?: (items: ActionItem[]) => void;
+  meetingId?: string;
   meetingTitle?: string;
   meetingDate?: string;
 }
@@ -157,12 +159,116 @@ const waveformBars = [
 export const TranscriptReviewView: React.FC<TranscriptReviewViewProps> = ({
   onBackToDashboard,
   onPushItems,
+  meetingId,
   meetingTitle,
   meetingDate,
 }) => {
   const [actionItems, setActionItems] = useState<ActionItem[]>(initialActionItems);
+  const [transcriptTurns, setTranscriptTurns] = useState<TranscriptTurn[]>(sampleTranscriptTurns);
   const [searchQuery, setSearchQuery] = useState('');
   const [pushStatus, setPushStatus] = useState<'idle' | 'pushing' | 'done'>('idle');
+  const [loading, setLoading] = useState(false);
+
+  // Load real action items from backend if meetingId is provided
+  useEffect(() => {
+    if (!meetingId) return;
+
+    let isMounted = true;
+    setLoading(true);
+
+    Promise.all([
+      api.getMeeting(meetingId).catch(() => null),
+      api.getMeetingItems(meetingId).catch(() => null),
+    ])
+      .then(([meetingRes, itemsRes]) => {
+        if (!isMounted) return;
+
+        if (itemsRes?.items && itemsRes.items.length > 0) {
+          const colors = [
+            'bg-secondary text-on-secondary',
+            'bg-primary-container text-on-primary',
+            'bg-secondary-fixed text-on-secondary-fixed',
+            'bg-surface-container-highest text-on-surface',
+          ];
+
+          const mapped: ActionItem[] = itemsRes.items.map((it, idx) => {
+            const assigneeName = it.assigneeRaw || 'Unassigned';
+            const initials = assigneeName !== 'Unassigned'
+              ? assigneeName.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()
+              : '??';
+
+            let dueStr = 'No due date';
+            if (it.dueDate) {
+              const d = new Date(it.dueDate);
+              if (!isNaN(d.getTime())) {
+                dueStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+              }
+            }
+
+            return {
+              id: it.id,
+              timestamp: `Item ${idx + 1}`,
+              title: it.description,
+              context: it.sourceSnippet || undefined,
+              assignee: {
+                name: assigneeName,
+                initials,
+                colorClass: colors[idx % colors.length],
+              },
+              dueDate: dueStr,
+              destination: {
+                icon: 'task',
+                label: 'Jira / Task',
+                colorClass: 'bg-secondary-container text-on-secondary-fixed',
+              },
+              confidence: 96,
+              included: it.status !== 'excluded',
+              excluded: it.status === 'excluded',
+            };
+          });
+
+          setActionItems(mapped);
+        }
+
+        // Parse transcript turns if raw transcript exists
+        if (meetingRes?.meeting?.rawTranscript) {
+          const raw = meetingRes.meeting.rawTranscript;
+          const lines = raw.split('\n').filter((l) => l.trim().length > 0);
+          const turns: TranscriptTurn[] = lines.map((line, idx) => {
+            const colonIdx = line.indexOf(':');
+            let speakerName = `Speaker ${(idx % 3) + 1}`;
+            let text = line;
+            if (colonIdx > 0 && colonIdx < 30) {
+              speakerName = line.slice(0, colonIdx).trim();
+              text = line.slice(colonIdx + 1).trim();
+            }
+
+            const initials = speakerName.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase();
+            return {
+              id: idx + 1,
+              speaker: {
+                initials: initials || 'SP',
+                name: speakerName,
+                colorClass: 'bg-secondary text-on-secondary',
+              },
+              timestamp: `0${Math.floor(idx * 1.5)}:${(idx * 23) % 60 < 10 ? '0' : ''}${(idx * 23) % 60}`,
+              text,
+            };
+          });
+
+          if (turns.length > 0) {
+            setTranscriptTurns(turns);
+          }
+        }
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [meetingId]);
 
   const approvedCount = useMemo(
     () => actionItems.filter((item) => item.included && !item.excluded).length,
@@ -172,43 +278,75 @@ export const TranscriptReviewView: React.FC<TranscriptReviewViewProps> = ({
   const totalCount = actionItems.length;
 
   const filteredTurns = useMemo(() => {
-    if (!searchQuery.trim()) return sampleTranscriptTurns;
+    if (!searchQuery.trim()) return transcriptTurns;
     const q = searchQuery.toLowerCase();
-    return sampleTranscriptTurns.filter(
+    return transcriptTurns.filter(
       (turn) =>
         turn.speaker.name.toLowerCase().includes(q) ||
         turn.text.toLowerCase().includes(q) ||
         (turn.actionItem?.quote.toLowerCase().includes(q) ?? false),
     );
-  }, [searchQuery]);
+  }, [searchQuery, transcriptTurns]);
 
-  const handleToggleItem = (itemId: number) => {
+  const handleToggleItem = (itemId: number | string) => {
     setActionItems((prev) =>
-      prev.map((item) =>
-        item.id === itemId ? { ...item, included: !item.included } : item,
-      ),
+      prev.map((item) => {
+        if (item.id === itemId) {
+          const nextIncluded = !item.included;
+          if (meetingId && typeof itemId === 'string') {
+            api.updateActionItem(meetingId, itemId, {
+              status: nextIncluded ? 'approved' : 'pending',
+            }).catch(console.error);
+          }
+          return { ...item, included: nextIncluded };
+        }
+        return item;
+      }),
     );
   };
 
-  const handleExcludeItem = (itemId: number) => {
+  const handleExcludeItem = (itemId: number | string) => {
     setActionItems((prev) =>
-      prev.map((item) =>
-        item.id === itemId ? { ...item, excluded: true, included: false } : item,
-      ),
+      prev.map((item) => {
+        if (item.id === itemId) {
+          if (meetingId && typeof itemId === 'string') {
+            api.updateActionItem(meetingId, itemId, {
+              status: 'excluded',
+            }).catch(console.error);
+          }
+          return { ...item, excluded: true, included: false };
+        }
+        return item;
+      }),
     );
   };
 
   const handleSelectAll = () => {
     setActionItems((prev) =>
-      prev.map((item) => ({ ...item, included: true, excluded: false })),
+      prev.map((item) => {
+        if (meetingId && typeof item.id === 'string') {
+          api.updateActionItem(meetingId, item.id, {
+            status: 'approved',
+          }).catch(console.error);
+        }
+        return { ...item, included: true, excluded: false };
+      }),
     );
   };
 
-  const handleTitleChange = (itemId: number, newTitle: string) => {
+  const handleTitleChange = (itemId: number | string, newTitle: string) => {
     setActionItems((prev) =>
-      prev.map((item) =>
-        item.id === itemId ? { ...item, title: newTitle } : item,
-      ),
+      prev.map((item) => {
+        if (item.id === itemId) {
+          if (meetingId && typeof itemId === 'string') {
+            api.updateActionItem(meetingId, itemId, {
+              description: newTitle,
+            }).catch(console.error);
+          }
+          return { ...item, title: newTitle };
+        }
+        return item;
+      }),
     );
   };
 
@@ -275,6 +413,12 @@ export const TranscriptReviewView: React.FC<TranscriptReviewViewProps> = ({
             </div>
           </div>
           <div className="flex items-center gap-space-sm shrink-0 w-full lg:w-auto justify-end">
+            {loading && (
+              <span className="text-primary text-label-sm inline-flex items-center gap-1 animate-pulse mr-2">
+                <span className="material-symbols-outlined text-[16px] animate-spin">sync</span>
+                Loading real data...
+              </span>
+            )}
             <button
               className="px-space-md py-2 rounded-lg bg-surface-container-low hover:bg-surface-container font-label-md text-label-md text-on-surface transition-colors inline-flex items-center gap-1.5 shadow-sm cursor-pointer"
               type="button"

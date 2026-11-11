@@ -101,7 +101,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
               onExtractionComplete={(data) => {
                 console.log('Action extraction completed:', data);
                 setSelectedMeeting({
-                  id: 'extracted-session',
+                  id: data.meetingId,
                   title: data.title,
                   date: `${new Date().toLocaleDateString('en-US', {
                     month: 'short',
@@ -114,6 +114,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
             />
           ) : currentTab === 'transcript-review' ? (
             <TranscriptReviewView
+              meetingId={selectedMeeting?.id}
               meetingTitle={selectedMeeting?.title}
               meetingDate={selectedMeeting?.date}
               onBackToDashboard={() => handleTabChange('dashboard')}
