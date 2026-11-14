@@ -1,0 +1,24 @@
+{
+  "content": [
+    {
+      "text": "{\"name\":\"projects/7606118479227264216/screens/c5fae916839a4bebbb152626bf07f69f\",\"title\":\"Login — MeetAction\",\"screenshot\":{\"name\":\"projects/7606118479227264216/screens/c5fae916839a4bebbb152626bf07f69f/fileEntries/screenshot\",\"downloadUrl\":\"https://lh3.googleusercontent.com/aida/AEtjO1V5McuPepgyeXd6AJf3px4mbfdZHPterwRdaqEWDyToEcPMJfa2nAEchx24q3J-CLMeTEU_xb-Xa6-Hwy4YXXzk_CmRoyn4y3gNFCbW2chxLrp5VL2UcYgS9Mj9vJINwnEaD58toswYM4gxTDCGUkKSOgrcJQRhzCSJ24hpknyF8CmXjwb1T5qBGSFgp5A4R7CLfVntii_t7Cpu2M79FNRGjYcKg7hb2zOPK1BaA3HNkVlZg4G_1A7anb8\"},\"htmlCode\":{\"name\":\"projects/7606118479227264216/screens/c5fae916839a4bebbb152626bf07f69f/fileEntries/html\",\"downloadUrl\":\"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1Y2YwNDIxOTNiMjkwMDMwMjc2ZGU4MDhlOTFlEgsSBxDqk7yjtAoYAZIBIwoKcHJvamVjdF9pZBIVQhM3NjA2MTE4NDc5MjI3MjY0MjE2&filename=&opi=89354086\",\"mimeType\":\"text/html\"},\"width\":\"2560\",\"height\":\"2048\",\"deviceType\":\"DESKTOP\"}",
+      "type": "text"
+    }
+  ],
+  "structuredContent": {
+    "deviceType": "DESKTOP",
+    "height": "2048",
+    "htmlCode": {
+      "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1Y2YwNDIxOTNiMjkwMDMwMjc2ZGU4MDhlOTFlEgsSBxDqk7yjtAoYAZIBIwoKcHJvamVjdF9pZBIVQhM3NjA2MTE4NDc5MjI3MjY0MjE2&filename=&opi=89354086",
+      "mimeType": "text/html",
+      "name": "projects/7606118479227264216/screens/c5fae916839a4bebbb152626bf07f69f/fileEntries/html"
+    },
+    "name": "projects/7606118479227264216/screens/c5fae916839a4bebbb152626bf07f69f",
+    "screenshot": {
+      "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1V5McuPepgyeXd6AJf3px4mbfdZHPterwRdaqEWDyToEcPMJfa2nAEchx24q3J-CLMeTEU_xb-Xa6-Hwy4YXXzk_CmRoyn4y3gNFCbW2chxLrp5VL2UcYgS9Mj9vJINwnEaD58toswYM4gxTDCGUkKSOgrcJQRhzCSJ24hpknyF8CmXjwb1T5qBGSFgp5A4R7CLfVntii_t7Cpu2M79FNRGjYcKg7hb2zOPK1BaA3HNkVlZg4G_1A7anb8",
+      "name": "projects/7606118479227264216/screens/c5fae916839a4bebbb152626bf07f69f/fileEntries/screenshot"
+    },
+    "title": "Login — MeetAction",
+    "width": "2560"
+  }
+}

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { apiClient } from '../../api/client';
 
 interface Meeting {
   id: string;
@@ -77,10 +78,59 @@ export const MeetingsTable: React.FC<MeetingsTableProps> = ({
   onReviewMeeting,
   onViewSummary,
 }) => {
+  const [meetingsList, setMeetingsList] = useState<Meeting[]>(mockMeetings);
   const [filterStatus, setFilterStatus] = useState<'All' | 'Synced' | 'Needs Review'>('All');
   const [tableSearch, setTableSearch] = useState('');
 
-  const filteredMeetings = mockMeetings.filter((meeting) => {
+  useEffect(() => {
+    let mounted = true;
+    apiClient
+      .getMeetings()
+      .then((list) => {
+        if (!mounted || !list || list.length === 0) return;
+        const mapped: Meeting[] = list.map((m) => {
+          let icon = 'videocam';
+          let source = 'Audio Ingestion';
+          if (m.sourceType === 'audio') {
+            icon = 'mic';
+            source = 'Audio Clip / Recording';
+          } else if (m.sourceType === 'file') {
+            icon = 'description';
+            source = 'Uploaded Doc';
+          } else {
+            icon = 'notes';
+            source = 'Pasted Notes';
+          }
+
+          const dateStr = new Date(m.createdAt).toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+          });
+
+          return {
+            id: m.id,
+            title: m.title,
+            source,
+            icon,
+            date: dateStr,
+            duration: m.duration || '25 min',
+            actionItemsCount: m.actionItemsCount || 0,
+            tickets: m.tickets || [],
+            status: m.status === 'synced' ? 'Synced' : 'Needs Review',
+          };
+        });
+        setMeetingsList(mapped);
+      })
+      .catch((e) => {
+        console.warn('Could not fetch backend meetings, showing default list:', e);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const filteredMeetings = meetingsList.filter((meeting) => {
     const matchesFilter = filterStatus === 'All' || meeting.status === filterStatus;
     const matchesSearch =
       meeting.title.toLowerCase().includes(tableSearch.toLowerCase()) ||

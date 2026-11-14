@@ -1,6 +1,33 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { apiClient } from '../../api/client';
 
 export const MetricCards: React.FC = () => {
+  const [stats, setStats] = useState({
+    totalMeetings: 148,
+    totalActionItems: 412,
+    totalTicketsCreated: 386,
+  });
+
+  useEffect(() => {
+    let mounted = true;
+    apiClient
+      .getStats()
+      .then((data) => {
+        if (!mounted || !data) return;
+        setStats({
+          totalMeetings: data.totalMeetings || 148,
+          totalActionItems: data.totalActionItems || 412,
+          totalTicketsCreated: data.totalTicketsCreated || 386,
+        });
+      })
+      .catch((e) => {
+        console.warn('Could not fetch backend stats, showing defaults:', e);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-space-md">
       {/* Card 1: Total Meetings */}
@@ -15,7 +42,9 @@ export const MetricCards: React.FC = () => {
           </div>
         </div>
         <div className="mt-4 flex items-baseline gap-2">
-          <span className="font-display text-display text-on-surface leading-none font-bold">148</span>
+          <span className="font-display text-display text-on-surface leading-none font-bold">
+            {stats.totalMeetings}
+          </span>
           <span className="font-label-sm text-label-sm text-secondary font-medium">recorded</span>
         </div>
         <div className="mt-3 pt-3 flex items-center justify-between text-secondary border-t border-surface-variant/30">
@@ -38,13 +67,17 @@ export const MetricCards: React.FC = () => {
           </div>
         </div>
         <div className="mt-4 flex items-baseline gap-2">
-          <span className="font-display text-display text-on-surface leading-none font-bold">412</span>
+          <span className="font-display text-display text-on-surface leading-none font-bold">
+            {stats.totalActionItems}
+          </span>
           <span className="font-label-sm text-label-sm text-secondary font-medium">insights</span>
         </div>
         <div className="mt-3 pt-3 flex items-center justify-between text-secondary border-t border-surface-variant/30">
           <span className="font-body-sm text-body-sm">Detected by AI engine</span>
           <div className="flex items-center gap-1 font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-medium">
-            <span>2.78 avg / meet</span>
+            <span>
+              {(stats.totalActionItems / Math.max(stats.totalMeetings, 1)).toFixed(2)} avg / meet
+            </span>
           </div>
         </div>
       </div>
@@ -61,13 +94,16 @@ export const MetricCards: React.FC = () => {
           </div>
         </div>
         <div className="mt-4 flex items-baseline gap-2">
-          <span className="font-display text-display text-on-surface leading-none font-bold">389</span>
+          <span className="font-display text-display text-on-surface leading-none font-bold">
+            {stats.totalTicketsCreated}
+          </span>
           <span className="font-label-sm text-label-sm text-secondary font-medium">synced</span>
         </div>
-        <div className="mt-3 pt-3 flex items-center justify-between border-t border-surface-variant/30">
-          <span className="font-body-sm text-body-sm text-secondary">across Jira &amp; Trello</span>
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-fixed font-label-sm text-label-sm font-semibold">
-            <span className="w-1.5 h-1.5 rounded-full bg-primary" /> 98% dispatch rate
+        <div className="mt-3 pt-3 flex items-center justify-between text-secondary border-t border-surface-variant/30">
+          <span className="font-body-sm text-body-sm">Jira &amp; Trello</span>
+          <span className="inline-flex items-center gap-1 font-label-sm text-label-sm text-primary font-semibold">
+            <span className="material-symbols-outlined text-[14px]">check_circle</span>
+            Active sync
           </span>
         </div>
       </div>

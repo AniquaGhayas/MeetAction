@@ -1,0 +1,27 @@
+{
+  "name": "meetaction",
+  "version": "1.0.0",
+  "description": "MeetAction - Automated Meeting Transcript & Audio Ingestion to Jira & Trello",
+  "private": true,
+  "scripts": {
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "build:backend": "npm --prefix backend run build",
+    "build:frontend": "npm --prefix frontend run build",
+    "build": "npm run build:backend && npm run build:frontend",
+    "start": "npm --prefix backend run start",
+    "test:phase3": "npm --prefix backend run build && node backend/dist/test-phase3.js",
+    "test:phase5": "npm --prefix backend run build && node backend/dist/test-phase5.js"
+  },
+  "keywords": [
+    "transcription",
+    "speech-to-text",
+    "action-items",
+    "jira",
+    "trello",
+    "llm",
+    "meeting-assistant"
+  ],
+  "author": "Anny",
+  "license": "ISC"
+}

@@ -1,0 +1,9 @@
+.env
+.env.*
+!.env.example
+env/
+.venv/
+node_modules/
+backend/uploads/
+backend/dist/
+backend/data/store.json

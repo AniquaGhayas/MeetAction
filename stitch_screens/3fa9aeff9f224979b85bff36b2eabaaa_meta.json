@@ -1,0 +1,24 @@
+{
+  "content": [
+    {
+      "text": "{\"name\":\"projects/7606118479227264216/screens/3fa9aeff9f224979b85bff36b2eabaaa\",\"title\":\"Integrations & Settings\",\"screenshot\":{\"name\":\"projects/7606118479227264216/screens/3fa9aeff9f224979b85bff36b2eabaaa/fileEntries/screenshot\",\"downloadUrl\":\"https://lh3.googleusercontent.com/aida/AEtjO1X_o5h8kNx5CDDnjsfOYsCG8tQVg8Ko-9LsrH1Fhx4k66uot0MJu-zurSurzxgSCBnD9zuvgpnUt-MkkbMPORKT-Geb91sUbNOSVQRC-QysnpTPOLU80g42fjKHq0nSaihxpqAMkFr9YFRYGlPTlvHB7Gn3Q_9q5xlyjiZo6V5Cvc43r9eQkg6aooYytsSh43FHBMSMXyUipZtT1NO3J5R0smp2xXsnD5HaBaltqhCyC4gHKdm4ZNrO8YQ\"},\"htmlCode\":{\"name\":\"projects/7606118479227264216/screens/3fa9aeff9f224979b85bff36b2eabaaa/fileEntries/html\",\"downloadUrl\":\"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1Y2YwMjk4YWIzNjcwNzNhZTExYTUxM2IwOTY1EgsSBxDqk7yjtAoYAZIBIwoKcHJvamVjdF9pZBIVQhM3NjA2MTE4NDc5MjI3MjY0MjE2&filename=&opi=89354086\",\"mimeType\":\"text/html\"},\"width\":\"2560\",\"height\":\"2292\",\"deviceType\":\"DESKTOP\"}",
+      "type": "text"
+    }
+  ],
+  "structuredContent": {
+    "deviceType": "DESKTOP",
+    "height": "2292",
+    "htmlCode": {
+      "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1Y2YwMjk4YWIzNjcwNzNhZTExYTUxM2IwOTY1EgsSBxDqk7yjtAoYAZIBIwoKcHJvamVjdF9pZBIVQhM3NjA2MTE4NDc5MjI3MjY0MjE2&filename=&opi=89354086",
+      "mimeType": "text/html",
+      "name": "projects/7606118479227264216/screens/3fa9aeff9f224979b85bff36b2eabaaa/fileEntries/html"
+    },
+    "name": "projects/7606118479227264216/screens/3fa9aeff9f224979b85bff36b2eabaaa",
+    "screenshot": {
+      "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1X_o5h8kNx5CDDnjsfOYsCG8tQVg8Ko-9LsrH1Fhx4k66uot0MJu-zurSurzxgSCBnD9zuvgpnUt-MkkbMPORKT-Geb91sUbNOSVQRC-QysnpTPOLU80g42fjKHq0nSaihxpqAMkFr9YFRYGlPTlvHB7Gn3Q_9q5xlyjiZo6V5Cvc43r9eQkg6aooYytsSh43FHBMSMXyUipZtT1NO3J5R0smp2xXsnD5HaBaltqhCyC4gHKdm4ZNrO8YQ",
+      "name": "projects/7606118479227264216/screens/3fa9aeff9f224979b85bff36b2eabaaa/fileEntries/screenshot"
+    },
+    "title": "Integrations & Settings",
+    "width": "2560"
+  }
+}

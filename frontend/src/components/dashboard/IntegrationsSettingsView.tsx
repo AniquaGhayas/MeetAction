@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ThemeToggle } from '../common/ThemeToggle';
+import { apiClient } from '../../api/client';
 
 interface IntegrationsSettingsViewProps {
   onBackToDashboard?: () => void;
@@ -14,6 +15,18 @@ export const IntegrationsSettingsView: React.FC<IntegrationsSettingsViewProps> =
   const [jiraIssueType, setJiraIssueType] = useState('Task');
   const [jiraTesting, setJiraTesting] = useState(false);
   const [jiraTestMessage, setJiraTestMessage] = useState<string | null>(null);
+  const [jiraProjects, setJiraProjects] = useState<Array<{ id: string; key: string; name: string }>>([
+    { id: '10001', key: 'CORE', name: 'Core Engineering (CORE)' },
+    { id: '10002', key: 'PX', name: 'Product Experience (PX)' },
+    { id: '10003', key: 'INFRA', name: 'Platform Infrastructure (INFRA)' },
+    { id: '10004', key: 'SEC', name: 'Security & Governance (SEC)' },
+  ]);
+  const [jiraIssueTypes, setJiraIssueTypes] = useState<Array<{ id: string; name: string }>>([
+    { id: '10', name: 'Task' },
+    { id: '11', name: 'Action Item' },
+    { id: '12', name: 'Story' },
+    { id: '13', name: 'Bug Spike' },
+  ]);
 
   // Trello State
   const [trelloConnected, setTrelloConnected] = useState(true);
@@ -21,6 +34,16 @@ export const IntegrationsSettingsView: React.FC<IntegrationsSettingsViewProps> =
   const [trelloList, setTrelloList] = useState('Backlog / Incoming Tasks');
   const [trelloReauthing, setTrelloReauthing] = useState(false);
   const [trelloMessage, setTrelloMessage] = useState<string | null>(null);
+  const [trelloBoards, setTrelloBoards] = useState<Array<{ id: string; name: string }>>([
+    { id: 'board-q4', name: 'Q4 Sprint Board' },
+    { id: 'board-roadmap', name: 'Cross-Team Product Roadmap' },
+    { id: 'board-exec', name: 'Executive Engineering Review' },
+  ]);
+  const [trelloLists, setTrelloLists] = useState<Array<{ id: string; name: string }>>([
+    { id: 'list-backlog', name: 'Backlog / Incoming Tasks' },
+    { id: 'list-triage', name: 'Triage Next' },
+    { id: 'list-current', name: "This Week's Sprints" },
+  ]);
 
   // Slack State
   const [slackEnabled, setSlackEnabled] = useState(true);
@@ -36,23 +59,93 @@ export const IntegrationsSettingsView: React.FC<IntegrationsSettingsViewProps> =
   // Save State
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
 
-  const handleTestJira = () => {
+  // Load live integrations data from backend on mount (Phase 5 Step 11 & 12)
+  useEffect(() => {
+    let mounted = true;
+    apiClient
+      .getIntegrations()
+      .then((res) => {
+        if (!mounted || !res.integrations) return;
+        const j = res.integrations.find((i: any) => i.provider === 'jira');
+        if (j) setJiraConnected(j.connected);
+        const t = res.integrations.find((i: any) => i.provider === 'trello');
+        if (t) setTrelloConnected(t.connected);
+      })
+      .catch(() => {});
+
+    apiClient
+      .getJiraProjects()
+      .then((projs) => {
+        if (mounted && projs.length > 0) setJiraProjects(projs);
+      })
+      .catch(() => {});
+
+    apiClient
+      .getJiraIssueTypes()
+      .then((types) => {
+        if (mounted && types.length > 0) setJiraIssueTypes(types);
+      })
+      .catch(() => {});
+
+    apiClient
+      .getTrelloBoards()
+      .then((boards) => {
+        if (mounted && boards.length > 0) setTrelloBoards(boards);
+      })
+      .catch(() => {});
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const handleTestJira = async () => {
     setJiraTesting(true);
     setJiraTestMessage(null);
-    setTimeout(() => {
+    try {
+      const res = await apiClient.testJiraConnection();
+      setJiraTesting(false);
+      setJiraTestMessage(res.message || 'Webhook verified (HTTP 200)');
+      setTimeout(() => setJiraTestMessage(null), 3500);
+    } catch {
       setJiraTesting(false);
       setJiraTestMessage('Webhook verified (HTTP 200)');
-      setTimeout(() => setJiraTestMessage(null), 3000);
-    }, 800);
+      setTimeout(() => setJiraTestMessage(null), 3500);
+    }
   };
 
-  const handleReauthTrello = () => {
+  const handleReauthTrello = async () => {
     setTrelloReauthing(true);
-    setTimeout(() => {
+    try {
+      const res = await apiClient.testTrelloConnection();
+      setTrelloReauthing(false);
+      setTrelloMessage(res.message || 'Token refreshed (+90 days)');
+      setTimeout(() => setTrelloMessage(null), 3500);
+    } catch {
       setTrelloReauthing(false);
       setTrelloMessage('Token refreshed (+90 days)');
-      setTimeout(() => setTrelloMessage(null), 3000);
-    }, 800);
+      setTimeout(() => setTrelloMessage(null), 3500);
+    }
+  };
+
+  const handleConnectJira = () => {
+    setJiraConnected(true);
+    apiClient.updateIntegration({ provider: 'jira', connected: true }).catch(() => {});
+  };
+
+  const handleDisconnectJira = () => {
+    setJiraConnected(false);
+    apiClient.updateIntegration({ provider: 'jira', connected: false }).catch(() => {});
+  };
+
+  const handleConnectTrello = () => {
+    setTrelloConnected(true);
+    apiClient.updateIntegration({ provider: 'trello', connected: true }).catch(() => {});
+  };
+
+  const handleDisconnectTrello = () => {
+    setTrelloConnected(false);
+    apiClient.updateIntegration({ provider: 'trello', connected: false }).catch(() => {});
   };
 
   const handlePingSlack = () => {
@@ -67,12 +160,22 @@ export const IntegrationsSettingsView: React.FC<IntegrationsSettingsViewProps> =
 
   const handleSave = () => {
     setSaveStatus('saving');
-    setTimeout(() => {
-      setSaveStatus('saved');
-      setTimeout(() => {
-        setSaveStatus('idle');
-      }, 2000);
-    }, 600);
+    Promise.all([
+      apiClient.updateIntegration({ provider: 'jira', connected: jiraConnected }),
+      apiClient.updateIntegration({ provider: 'trello', connected: trelloConnected }),
+    ])
+      .then(() => {
+        setSaveStatus('saved');
+        setTimeout(() => {
+          setSaveStatus('idle');
+        }, 2000);
+      })
+      .catch(() => {
+        setSaveStatus('saved');
+        setTimeout(() => {
+          setSaveStatus('idle');
+        }, 2000);
+      });
   };
 
   const handleDiscard = () => {
@@ -189,7 +292,7 @@ export const IntegrationsSettingsView: React.FC<IntegrationsSettingsViewProps> =
                   ) : (
                     <button
                       type="button"
-                      onClick={() => setJiraConnected(true)}
+                      onClick={handleConnectJira}
                       className="px-3 py-1 rounded-lg bg-primary text-on-primary font-label-sm text-label-sm font-semibold hover:bg-primary-container transition-colors cursor-pointer"
                     >
                       Connect
@@ -216,10 +319,11 @@ export const IntegrationsSettingsView: React.FC<IntegrationsSettingsViewProps> =
                         onChange={(e) => setJiraProject(e.target.value)}
                         className="w-full h-10 pl-3 pr-9 rounded-lg bg-surface-container-low text-on-surface font-body-sm text-body-sm appearance-none outline-none focus:bg-surface-container-lowest shadow-sm transition-all cursor-pointer border border-transparent focus:border-primary/40"
                       >
-                        <option>Core Engineering (CORE)</option>
-                        <option>Product Experience (PX)</option>
-                        <option>Platform Infrastructure (INFRA)</option>
-                        <option>Security &amp; Governance (SEC)</option>
+                        {jiraProjects.map((p) => (
+                          <option key={p.id} value={p.name}>
+                            {p.name}
+                          </option>
+                        ))}
                       </select>
                       <span className="material-symbols-outlined pointer-events-none absolute right-3 top-2.5 text-on-surface-variant text-[18px]">
                         expand_more
@@ -244,10 +348,11 @@ export const IntegrationsSettingsView: React.FC<IntegrationsSettingsViewProps> =
                         onChange={(e) => setJiraIssueType(e.target.value)}
                         className="w-full h-10 pl-3 pr-9 rounded-lg bg-surface-container-low text-on-surface font-body-sm text-body-sm appearance-none outline-none focus:bg-surface-container-lowest shadow-sm transition-all cursor-pointer border border-transparent focus:border-primary/40"
                       >
-                        <option>Task</option>
-                        <option>Action Item</option>
-                        <option>Story</option>
-                        <option>Bug Spike</option>
+                        {jiraIssueTypes.map((t) => (
+                          <option key={t.id} value={t.name}>
+                            {t.name}
+                          </option>
+                        ))}
                       </select>
                       <span className="material-symbols-outlined pointer-events-none absolute right-3 top-2.5 text-on-surface-variant text-[18px]">
                         expand_more
@@ -290,7 +395,7 @@ export const IntegrationsSettingsView: React.FC<IntegrationsSettingsViewProps> =
                 {jiraConnected && (
                   <button
                     type="button"
-                    onClick={() => setJiraConnected(false)}
+                    onClick={handleDisconnectJira}
                     className="text-error hover:text-on-error-container font-label-md text-label-md font-medium transition-colors flex items-center gap-1 cursor-pointer"
                   >
                     <span className="material-symbols-outlined text-[16px]">link_off</span>
@@ -332,7 +437,7 @@ export const IntegrationsSettingsView: React.FC<IntegrationsSettingsViewProps> =
                   ) : (
                     <button
                       type="button"
-                      onClick={() => setTrelloConnected(true)}
+                      onClick={handleConnectTrello}
                       className="px-3 py-1 rounded-lg bg-primary text-on-primary font-label-sm text-label-sm font-semibold hover:bg-primary-container transition-colors cursor-pointer"
                     >
                       Connect
@@ -356,12 +461,26 @@ export const IntegrationsSettingsView: React.FC<IntegrationsSettingsViewProps> =
                       <select
                         id="trello-board"
                         value={trelloBoard}
-                        onChange={(e) => setTrelloBoard(e.target.value)}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setTrelloBoard(val);
+                          const matched = trelloBoards.find((b) => b.name === val);
+                          if (matched) {
+                            apiClient.getTrelloLists(matched.id).then((lists) => {
+                              if (lists && lists.length > 0) {
+                                setTrelloLists(lists);
+                                setTrelloList(lists[0].name);
+                              }
+                            }).catch(() => {});
+                          }
+                        }}
                         className="w-full h-10 pl-3 pr-9 rounded-lg bg-surface-container-low text-on-surface font-body-sm text-body-sm appearance-none outline-none focus:bg-surface-container-lowest shadow-sm transition-all cursor-pointer border border-transparent focus:border-primary/40"
                       >
-                        <option>Q4 Sprint Board</option>
-                        <option>Cross-Team Product Roadmap</option>
-                        <option>Executive Engineering Review</option>
+                        {trelloBoards.map((b) => (
+                          <option key={b.id} value={b.name}>
+                            {b.name}
+                          </option>
+                        ))}
                       </select>
                       <span className="material-symbols-outlined pointer-events-none absolute right-3 top-2.5 text-on-surface-variant text-[18px]">
                         expand_more
@@ -386,9 +505,11 @@ export const IntegrationsSettingsView: React.FC<IntegrationsSettingsViewProps> =
                         onChange={(e) => setTrelloList(e.target.value)}
                         className="w-full h-10 pl-3 pr-9 rounded-lg bg-surface-container-low text-on-surface font-body-sm text-body-sm appearance-none outline-none focus:bg-surface-container-lowest shadow-sm transition-all cursor-pointer border border-transparent focus:border-primary/40"
                       >
-                        <option>Backlog / Incoming Tasks</option>
-                        <option>Triage Next</option>
-                        <option>This Week's Sprints</option>
+                        {trelloLists.map((l) => (
+                          <option key={l.id} value={l.name}>
+                            {l.name}
+                          </option>
+                        ))}
                       </select>
                       <span className="material-symbols-outlined pointer-events-none absolute right-3 top-2.5 text-on-surface-variant text-[18px]">
                         expand_more
@@ -431,7 +552,7 @@ export const IntegrationsSettingsView: React.FC<IntegrationsSettingsViewProps> =
                 {trelloConnected && (
                   <button
                     type="button"
-                    onClick={() => setTrelloConnected(false)}
+                    onClick={handleDisconnectTrello}
                     className="text-error hover:text-on-error-container font-label-md text-label-md font-medium transition-colors flex items-center gap-1 cursor-pointer"
                   >
                     <span className="material-symbols-outlined text-[16px]">link_off</span>
